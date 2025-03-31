@@ -1,0 +1,4 @@
+Flask
+pronouncing
+nltk
+gunicorn
