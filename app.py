@@ -1,67 +1,57 @@
 from flask import Flask, render_template, request, jsonify
-import nltk
-from nltk.corpus import cmudict
-
-nltk.download('cmudict')
-prondict = cmudict.dict()
-
-def get_rhyming_word(word):
-    """Function to get a rhyming word using NLTK or another method."""
-    rhyme_list = get_rhyming_word(word)  
-    if rhyme_list:
-        return random.choice(rhyme_list)
-    return None
-
 import random
-from nltk.corpus import wordnet
-import nltk
-
-# Ensure NLTK data is downloaded
-nltk.download('wordnet')
+import pronouncing
 
 app = Flask(__name__)
 
+# Get a random word from a predefined list of common words
+COMMON_WORDS = [
+    "happy", "sad", "bright", "dark", "lovely", "angry", "beautiful", "cloud", "mountain", "ocean",
+    "sky", "heart", "dream", "river", "rain", "snow", "flower", "bird", "star", "night", "day"
+]
+
+# Function to get a rhyming word for the name
 def get_rhyming_word(word):
-    """Fetch a rhyming word for the given input. Returns None if no rhymes are found."""
-rhyme_list = get_rhyming_word(word)  
-return random.choice(rhyme_list) if rhyme_list else None  # Return None if no rhymes are available
+    rhyme_list = pronouncing.rhymes(word)
+    if rhyme_list:
+        return random.choice(rhyme_list)
+    return None  # If no rhyme is found, return None
 
-def get_random_word(pos):
-    """Fetches a poetic word from WordNet for the given part of speech (adj/noun)."""
-    words = []
-    for synset in wordnet.all_synsets(pos):  # Filter by part of speech
-        for lemma in synset.lemmas():
-            word = lemma.name().replace("_", " ")  # Replace underscores in compound words
-            words.append(word)
-
-return random.choice(words) if words else "light"  # Default to "light" if nothing is found
+# Function to get a random word from COMMON_WORDS
+def get_random_word(word_type):
+    if word_type == "a":  # Adjective
+        return random.choice([word for word in COMMON_WORDS if word not in ["bird", "cloud", "river", "star"]])
+    elif word_type == "n":  # Noun
+        return random.choice([word for word in COMMON_WORDS if word not in ["happy", "bright", "dark", "lovely", "sad"]])
+    return None
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
 def generate_poem():
-    name = request.json.get('name')
-
-    # Get words dynamically
-    adj1 = get_random_word("a")  # Adjective
-    adj2 = get_random_word("a")  # Adjective
-    adj3 = get_random_word("a")  # Adjective
+    name = request.form['name']
     
-    noun1 = get_rhyming_word(name) or get_random_word("n")  # Rhyme if possible, else noun
-    noun2 = get_random_word("n")  # Noun
-    noun3 = get_rhyming_word(name) or get_random_word("n")  # Rhyme if possible, else noun
+    # Generate random words to fill the blanks
+    adj1 = get_random_word("a")
+    adj2 = get_random_word("a")
+    adj_rhyme = get_rhyming_word(name) or get_random_word("a")
+    noun_rhyme = get_rhyming_word(name) or get_random_word("n")
+    noun1 = get_random_word("n")
+    noun2 = get_random_word("n")
 
-    # Format the poem
-    poem = f"""{name}
-{adj1} and {adj2}
-{adj3} like {noun1}
-breathing {name} into the world around
-{name}
-a world of {noun2} and {noun3}"""
-
-    return jsonify({"poem": poem})
+    # Create the poem based on the name and random words
+    poem = f"""
+    {name}
+    {adj1} and {adj2} like {adj_rhyme}
+    {adj1} like {noun_rhyme}
+    Breathing {name} into the world around
+    {name}
+    A world of {noun1} and {noun2}
+    """
+    
+    return jsonify({'poem': poem})
 
 if __name__ == '__main__':
     app.run(debug=True)
