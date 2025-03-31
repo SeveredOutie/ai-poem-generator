@@ -24,7 +24,7 @@ app = Flask(__name__)
 def get_rhyming_word(word):
     """Fetch a rhyming word for the given input. Returns None if no rhymes are found."""
 rhyme_list = get_rhyming_word(word)  
-    return random.choice(rhyme_list) if rhyme_list else None  # Return None if no rhymes are available
+return random.choice(rhyme_list) if rhyme_list else None  # Return None if no rhymes are available
 
 def get_random_word(pos):
     """Fetches a poetic word from WordNet for the given part of speech (adj/noun)."""
@@ -34,7 +34,7 @@ def get_random_word(pos):
             word = lemma.name().replace("_", " ")  # Replace underscores in compound words
             words.append(word)
 
-    return random.choice(words) if words else "light"  # Default to "light" if nothing is found
+return random.choice(words) if words else "light"  # Default to "light" if nothing is found
 
 @app.route('/')
 def home():
