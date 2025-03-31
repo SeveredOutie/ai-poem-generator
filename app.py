@@ -1,5 +1,17 @@
 from flask import Flask, render_template, request, jsonify
-from pronouncing import rhymes
+import nltk
+from nltk.corpus import cmudict
+
+nltk.download('cmudict')
+prondict = cmudict.dict()
+
+def get_rhyming_word(word):
+    word = word.lower()
+    if word in prondict:
+        phonemes = prondict[word][0][-2:]  # Get the last two phonemes
+        rhyming_words = [w for w in prondict if prondict[w][0][-2:] == phonemes]
+        return random.choice(rhyming_words) if rhyming_words else None
+    return None
 import random
 from nltk.corpus import wordnet
 import nltk
