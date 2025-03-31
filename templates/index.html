@@ -12,31 +12,37 @@
 </head>
 <body>
     <h1>AI Poem Generator</h1>
-    <p>Enter your name to generate a custom poem:</p>
     <form id="poemForm">
-    <input type="text" id="name" placeholder="Enter name">
-    <button type="button" onclick="generatePoem()">Generate Poem</button>
+        <label for="name">Enter a name:</label>
+        <input type="text" id="name" placeholder="Enter name">
+        <button type="button" onclick="generatePoem()">Generate Poem</button>
 </form>
 <div id="poemOutput"></div>
 
     <script>
-        function generatePoem() {
-            let name = document.getElementById("nameInput").value;
-            if (!name) {
-                alert("Please enter a name!");
-                return;
-            }
-
-            fetch("/generate", {
+        // JavaScript to handle the form submission and display the poem
+        async function generatePoem() {
+            // Get the name from the input field
+            const name = document.getElementById("name").value;
+            
+            // Send a POST request to the Flask backend
+            const response = await fetch("/generate", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: name })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("poem").innerText = data.poem;
-            })
-            .catch(error => console.error("Error:", error));
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: name }) // Send name as JSON
+            });
+
+            // Check if the request was successful
+            if (response.ok) {
+                const data = await response.json();
+                // Display the poem returned by the backend
+                document.getElementById("poemOutput").innerHTML = data.poem;
+            } else {
+                // If an error occurred
+                document.getElementById("poemOutput").innerHTML = "Failed to generate poem. Please try again.";
+            }
         }
     </script>
 </body>
