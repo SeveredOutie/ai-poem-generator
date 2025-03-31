@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 def get_rhyming_word(word):
     """Fetch a rhyming word for the given input. Returns None if no rhymes are found."""
-    rhyme_list = rhymes(word)
+   rhyme_list = get_rhyming_word(word)  
     return random.choice(rhyme_list) if rhyme_list else None  # Return None if no rhymes are available
 
 def get_random_word(pos):
