@@ -7,6 +7,7 @@ import nltk
 # Ensure NLTK data is downloaded
 nltk.download('wordnet')
 
+app = Flask(__name__)
 
 def get_rhyming_word(word):
     """Fetch a rhyming word for the given input. Returns None if no rhymes are found."""
