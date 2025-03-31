@@ -6,12 +6,12 @@ nltk.download('cmudict')
 prondict = cmudict.dict()
 
 def get_rhyming_word(word):
-    word = word.lower()
-    if word in prondict:
-        phonemes = prondict[word][0][-2:]  # Get the last two phonemes
-        rhyming_words = [w for w in prondict if prondict[w][0][-2:] == phonemes]
-        return random.choice(rhyming_words) if rhyming_words else None
+    """Function to get a rhyming word using NLTK or another method."""
+    rhyme_list = get_rhyming_word(word)  
+    if rhyme_list:
+        return random.choice(rhyme_list)
     return None
+
 import random
 from nltk.corpus import wordnet
 import nltk
