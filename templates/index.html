@@ -13,9 +13,11 @@
 <body>
     <h1>AI Poem Generator</h1>
     <p>Enter your name to generate a custom poem:</p>
-    <input type="text" id="nameInput" placeholder="Enter your name">
-    <button onclick="generatePoem()">Generate</button>
-    <p id="poem"></p>
+    <form id="poemForm">
+    <input type="text" id="name" placeholder="Enter name">
+    <button type="button" onclick="generatePoem()">Generate Poem</button>
+</form>
+<div id="poemOutput"></div>
 
     <script>
         function generatePoem() {
