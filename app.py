@@ -28,9 +28,15 @@ def home():
 
 @app.route('/generate', methods=['POST'])
 def generate_poem():
-    name = request.form['name']
+    name = request.json.get('name')
+    if not name:
+        return jsonify({"error": "No name provided"}), 400
 
-    # Generate random adjectives and nouns
+    # Poem generation logic...
+    poem = generate_poem_logic(name)
+
+    return jsonify({"poem": poem})
+
     adj1 = get_random_word("adj")
     adj2 = get_random_word("adj")
     noun1 = get_rhyming_word(name) or get_random_word("n")
