@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
 from pronouncing import rhymes
 import random
 from nltk.corpus import wordnet
@@ -8,8 +7,6 @@ import nltk
 # Ensure NLTK data is downloaded
 nltk.download('wordnet')
 
-app = Flask(__name__)
-CORS(app)
 
 def get_rhyming_word(word):
     """Fetch a rhyming word for the given input. Returns None if no rhymes are found."""
