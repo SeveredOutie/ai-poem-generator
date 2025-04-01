@@ -63,7 +63,6 @@ if __name__ == '__main__':
     A world of {noun1} and {noun2}
     """
 
-    return jsonify({"poem": poem})
 
 if __name__ == '__main__':
     app.run(debug=True)
