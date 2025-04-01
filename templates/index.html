@@ -3,40 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Poem Generator</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
-        input, button { padding: 10px; font-size: 16px; }
-        #poem { margin-top: 20px; font-weight: bold; }
-    </style>
+    <title>Poem Generator</title>
 </head>
 <body>
     <h1>AI Poem Generator</h1>
-    <p>Enter your name to generate a custom poem:</p>
-    <input type="text" id="nameInput" placeholder="Enter your name">
-    <button onclick="generatePoem()">Generate</button>
-    <p id="poem"></p>
+
+    <!-- Form for entering the name -->
+    <form id="poemForm">
+        <label for="name">Enter a name:</label>
+        <input type="text" id="name" placeholder="Enter name">
+        <button type="button" onclick="generatePoem()">Generate Poem</button>
+    </form>
+
+    <!-- Div where the generated poem will be displayed -->
+    <div id="poemOutput"></div>
 
     <script>
-        function generatePoem() {
-            let name = document.getElementById("nameInput").value;
-            if (!name) {
-                alert("Please enter a name!");
+        // JavaScript to handle the form submission and display the poem
+        async function generatePoem() {
+            // Get the name from the input field
+            const name = document.getElementById("name").value.trim();
+
+            // If name is empty, show an error message
+            if (name === "") {
+                document.getElementById("poemOutput").innerHTML = "Please enter a name.";
                 return;
             }
 
-            fetch("/generate", {
+            // Send a POST request to the Flask backend
+            const response = await fetch("/generate", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: name })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("poem").innerText = data.poem;
-            })
-            .catch(error => console.error("Error:", error));
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name: name }) // Send name as JSON
+            });
+
+            // Check if the request was successful
+            if (response.ok) {
+                const data = await response.json();
+                // Display the poem returned by the backend
+                document.getElementById("poemOutput").innerHTML = data.poem;
+            } else {
+                // If an error occurred (e.g., name missing or server error)
+                const errorData = await response.json();
+                document.getElementById("poemOutput").innerHTML = `Error: ${errorData.error || "Failed to generate poem."}`;
+            }
         }
     </script>
 </body>
 </html>
-
