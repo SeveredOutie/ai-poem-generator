@@ -1,62 +1,44 @@
-import random
 import requests
-from flask import Flask, render_template, request, jsonify
+import random
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Helper function to fetch a random word from Datamuse API
-def get_random_word(adjective):
-    url = f"https://api.datamuse.com/words?rel_jjb={adjective}&max=1000"
+# Helper function to get a random word
+def get_random_word(part_of_speech="n"):
+    url = f"https://random-word-api.herokuapp.com/word?number=1&partOfSpeech={part_of_speech}"
     response = requests.get(url)
-    words = response.json()
-    if words:
-        return random.choice(words)['word']
-    return "random"
+    if response.status_code == 200:
+        return response.json()[0]  # Returns the first word from the list
+    else:
+        return None  # If the API fails
 
-# Helper function to get a rhyming word using the Datamuse API
-def get_rhyming_word(word):
-    url = f"https://api.datamuse.com/words?rel_rhy={word}&max=10"
-    response = requests.get(url)
-    words = response.json()
-    if words:
-        return random.choice(words)['word']
-    return word  # fallback to the original word if no rhymes are found
+# Logic for generating the poem
+def generate_poem_logic(name):
+    adjective1 = get_random_word("adjective")  # Fetch a random adjective
+    adjective2 = get_random_word("adjective")  # Fetch another random adjective
+    noun1 = get_random_word("noun")  # Fetch a random noun
+    noun2 = get_random_word("noun")  # Fetch another random noun
 
-@app.route('/')
-def home():
-    return render_template('index.html')
-        
+    if None in [adjective1, adjective2, noun1, noun2]:  # In case the API fails
+        return "Error: Unable to generate words."
+
+    # Generate a simple poem using the random words
+    poem = f"The {adjective1} {noun1} and the {adjective2} {noun2},\n" \
+           f"Where {name} finds peace, under the moon's soft glow."
+
+    return poem
+
 @app.route('/generate', methods=['POST'])
 def generate_poem():
-    data = request.get_json()
-    name = data.get('name', '')  # Extract the 'name' from the request body
-    
-    # Call the function to generate the poem
-    poem = generate_poem_logic(name)
+    data = request.get_json()  # Get the data from the request
+    name = data.get('name')  # Extract the name from the JSON payload
 
-    # Return the poem in JSON format
-    return jsonify({"poem": poem})
+    if name:
+        poem = generate_poem_logic(name)  # Call the poem generation logic
+        return jsonify({'poem': poem})  # Return the poem as JSON response
+    else:
+        return jsonify({'error': 'No name provided'}), 400  # Handle errors
 
-if __name__ == '__main__':
-    app.run(debug=True)
-    # Poem generation logic...
-    poem = generate_poem_logic(name)
-
-    adj1 = get_random_word("adj")
-    adj2 = get_random_word("adj")
-    noun1 = get_rhyming_word(name) or get_random_word("n")
-    noun2 = get_rhyming_word(name) or get_random_word("n")
-
-    # Format poem
-    poem = f"""
-    {name}
-    {adj1} and {adj2}
-    {adj1} like {noun1}
-    Breathing {name} into the world around
-    {name}
-    A world of {noun1} and {noun2}
-    """
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
