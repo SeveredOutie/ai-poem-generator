@@ -8,73 +8,47 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            padding: 20px;
             background-color: #f4f4f4;
         }
         h1 {
             color: #333;
         }
-        input {
-            padding: 10px;
-            width: 80%;
-            max-width: 300px;
+        input, button {
             margin: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
+            padding: 10px;
+            font-size: 16px;
         }
         #poemOutput {
             margin-top: 20px;
-            padding: 20px;
-            background-color: white;
+            padding: 15px;
+            background: white;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
     <h1>AI Poem Generator</h1>
-    <p>Enter your name to generate a unique AI poem:</p>
+    <p>Enter your name to generate a unique poem!</p>
     <input type="text" id="nameInput" placeholder="Enter your name">
     <button onclick="generatePoem()">Generate Poem</button>
-
     <div id="poemOutput"></div>
 
     <script>
-        async function generatePoem() {
-            const name = document.getElementById("nameInput").value.trim();
+        function generatePoem() {
+            const name = document.getElementById("nameInput").value || "Dreamer";
 
-            if (!name) {
-                alert("Please enter a name.");
-                return;
-            }
-
-            const response = await fetch("/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            fetch('/generate', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: name })
-            });
-
-            if (!response.ok) {
-                document.getElementById("poemOutput").innerText = "Error generating poem. Please try again.";
-                return;
-            }
-
-            const data = await response.json();
-            document.getElementById("poemOutput").innerText = data.poem;
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("poemOutput").innerText = data.poem;
+            })
+            .catch(error => console.error("Error:", error));
         }
     </script>
 </body>
