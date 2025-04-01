@@ -38,7 +38,33 @@
                 },
                 body: JSON.stringify({ name: name }) // Send name as JSON
             });
+        document.getElementById('generateButton').onclick = function () {
+            // Get the name entered in the input field
+            var name = document.getElementById('nameInput').value;
 
+            // Send a POST request to your Flask server
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name })  // Send the name as JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to generate poem');
+                }
+                return response.json();  // Parse the JSON response
+            })
+            .then(data => {
+                // Display the poem in the #poem div
+                document.getElementById('poem').innerText = data.poem;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        };
+    
             // Check if the request was successful
             if (response.ok) {
                 const data = await response.json();
