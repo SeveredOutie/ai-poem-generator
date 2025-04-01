@@ -48,8 +48,6 @@ if __name__ == '__main__':
     # Poem generation logic...
     poem = generate_poem_logic(name)
 
-    return jsonify({"poem": poem})
-
     adj1 = get_random_word("adj")
     adj2 = get_random_word("adj")
     noun1 = get_rhyming_word(name) or get_random_word("n")
