@@ -31,7 +31,20 @@ def generate_poem():
     name = request.json.get('name')
     if not name:
         return jsonify({"error": "No name provided"}), 400
+        
+@app.route('/generate', methods=['POST'])
+def generate_poem():
+    data = request.get_json()
+    name = data.get('name', '')  # Extract the 'name' from the request body
+    
+    # Call the function to generate the poem
+    poem = generate_poem_logic(name)
 
+    # Return the poem in JSON format
+    return jsonify({"poem": poem})
+
+if __name__ == '__main__':
+    app.run(debug=True)
     # Poem generation logic...
     poem = generate_poem_logic(name)
 
