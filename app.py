@@ -5,16 +5,17 @@ import random
 app = Flask(__name__)
 
 # Function to get a random AI-generated word
-def get_random_word():
+import requests
+
+def get_random_word(word_type):
     try:
-        response = requests.get("https://random-word-api.herokuapp.com/word?number=1")
+        response = requests.get(f"https://random-word-api.herokuapp.com/word?number=1")
         if response.status_code == 200:
-            return response.json()[0]  # Extract the word from the API response
+            return response.json()[0]
         else:
-            return "mystical"  # Default word if API fails
-    except Exception as e:
-        print("Error fetching random word:", e)
-        return "mystical"
+            return f"[{word_type}]"
+    except:
+        return f"[{word_type}]"
 
 # Function to generate a poem with a random AI-generated word
 def generate_poem_logic(name):
