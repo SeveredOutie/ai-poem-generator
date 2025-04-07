@@ -18,13 +18,17 @@ def get_random_word():
 
 # Function to generate a poem with a random AI-generated word
 def generate_poem_logic(name):
-    adjective = get_random_word()
-    poem = f"""
-    Oh {name}, so {adjective} and bright,  
-    Dancing like stars in the velvet night.  
-    Your soul, a whisper, a delicate art,  
-    A melody sung from the depths of the heart.  
-    """
+adjective1 = get_random_word("adjective")
+adjective2 = get_random_word("adjective")
+verb = get_random_word("verb")
+plural_noun = get_random_word("noun")
+
+poem = f"""
+My {name}, so {adjective1} and {adjective2},  
+I see you {verb} from my view.  
+{name}, what ever shall you do?  
+Dream about {plural_noun} for tonight.
+"""
     return poem
 
 @app.route('/')
