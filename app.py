@@ -17,6 +17,7 @@ def get_random_word():
         return "mystical"
 
 # Function to generate a poem with a random AI-generated word
+def generate_poem_logic(name):
     adjective1 = get_random_word("adjective")
     adjective2 = get_random_word("adjective")
     verb = get_random_word("verb")
