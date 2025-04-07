@@ -25,8 +25,8 @@ def generate_poem_logic(name):
     plural_noun = get_random_word("noun")
 
     poem = f"""
-    My {name}, so {adjective1} and {adjective2},  
-    I see you {verb} from my view.  
+    {name}, so {adjective1} and {adjective2},  
+    I see {verb} from my view.  
     {name}, what ever shall you do?  
     Dream about {plural_noun} for tonight.
     """
